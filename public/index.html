@@ -17,10 +17,11 @@
         getInitialState: function(){
           return{
             items:[],
-            objects:[]
+            objects:[],
+            displayView: []
           }
         },
-        componentDidMount: function(){
+        componentWillMount: function(){
 this.firebaseRef = new Firebase('https://hacker-news.firebaseio.com/v0/topstories');
             this.firebaseRef.once("value", function(dataSnapshot) {
               this.setState({
@@ -37,7 +38,8 @@ this.firebaseRef = new Firebase('https://hacker-news.firebaseio.com/v0/topstorie
               <div>
 
                 <Header/>
-                <Post articles = {this.state.objects}/>
+                <Post articles = {this.state.displayView}/>
+                <p onClick= {this.display30More}> More </p>
               </div>
             //for each newArticle make a new component
             )
@@ -49,21 +51,33 @@ this.firebaseRef = new Firebase('https://hacker-news.firebaseio.com/v0/topstorie
               var reference = new Firebase("https://hacker-news.firebaseio.com/v0/item/"+item);
               reference.once('value', function(item){
 
-                this.state.objects.push(<div> <h1>{item.val().by} </h1> </div>)
+                this.state.objects.push(<div class="article"> <h1>{item.val().by} </h1> </div>)
                 this.checkStatus();
             }.bind(this))
             }.bind(this));
         },
         checkStatus: function(){
-           if(this.state.objects.length === 50){
+           if(this.state.objects.length === 30){
               this.setState({
-                objects: this.state.objects
+                displayView: this.state.objects
               })
               console.log(this.state.objects[0]);
             }
             else{
               console.log('Objects length is', this.state.objects.length, this.state.items.val().length)
             }
+        },
+        display30More:function(){
+          var initalRange = this.props.range;
+          this.props.range+=30;
+          this.setState({
+            displayView: this.state.objects.slice(initalRange, this.props.range)
+          });
+        //   var 30More = this.state.objects.map(function(object){
+
+        //   })
+        //   console.log('Show 30 more');
+        //   console.log($('.article').last());
         }
       });
       var Header= React.createClass({
@@ -93,7 +107,7 @@ this.firebaseRef = new Firebase('https://hacker-news.firebaseio.com/v0/topstorie
           }
       })
 
-      React.render(<Body/>, document.getElementById('content'));
+      React.render(<Body range={30}/>, document.getElementById('content'));
     </script>
   </body>
 </html>
