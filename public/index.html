@@ -48,14 +48,18 @@ this.firebaseRef = new Firebase('https://hacker-news.firebaseio.com/v0/topstorie
           allObjectRef.forEach(function(item){
               var reference = new Firebase("https://hacker-news.firebaseio.com/v0/item/"+item);
               reference.once('value', function(item){
-                this.state.objects.push(<li>item.val()</li>)
+
+                this.state.objects.push(<div> <h1>{item.val().by} </h1> </div>)
                 this.checkStatus();
             }.bind(this))
             }.bind(this));
         },
         checkStatus: function(){
-           if(this.state.objects.length === this.state.items.val().length){
-              console.log(this.state.objects);
+           if(this.state.objects.length === 50){
+              this.setState({
+                objects: this.state.objects
+              })
+              console.log(this.state.objects[0]);
             }
             else{
               console.log('Objects length is', this.state.objects.length, this.state.items.val().length)
@@ -84,7 +88,7 @@ this.firebaseRef = new Firebase('https://hacker-news.firebaseio.com/v0/topstorie
         render:
           function(){
             return(
-              <ul> {this.props.articles} </ul>
+              <div> {this.props.articles} </div>
             )
           }
       })
