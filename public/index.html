@@ -14,17 +14,54 @@
     <div id="content"></div>
     <script type="text/jsx;harmony=true">
       var Body = React.createClass({
-        render:
-          function(){
+        getInitialState: function(){
+          return{
+            items:[],
+            objects:[]
+          }
+        },
+        componentDidMount: function(){
+this.firebaseRef = new Firebase('https://hacker-news.firebaseio.com/v0/topstories');
+            this.firebaseRef.once("value", function(dataSnapshot) {
+              this.setState({
+              items: dataSnapshot,
+              objects: []
+              });
+              console.log(dataSnapshot);
+              this.populateInfo();
+            }.bind(this));
+        },
+        render: function(){
+          console.log(this.state.objects)
             return(
               <div>
+
                 <Header/>
-                <Post/>
+                <Post articles = {this.state.objects}/>
               </div>
             //for each newArticle make a new component
             )
-          }
-      })
+          },
+        populateInfo: function(){
+          var allObjectRef = this.state.items.val();
+          
+          allObjectRef.forEach(function(item){
+              var reference = new Firebase("https://hacker-news.firebaseio.com/v0/item/"+item);
+              reference.once('value', function(item){
+                this.state.objects.push(<li>item.val()</li>)
+                this.checkStatus();
+            }.bind(this))
+            }.bind(this));
+        },
+        checkStatus: function(){
+           if(this.state.objects.length === this.state.items.val().length){
+              console.log(this.state.objects);
+            }
+            else{
+              console.log('Objects length is', this.state.objects.length, this.state.items.val().length)
+            }
+        }
+      });
       var Header= React.createClass({
         render: 
           function(){
@@ -47,7 +84,7 @@
         render:
           function(){
             return(
-              <h1> Hey </h1>
+              <ul> {this.props.articles} </ul>
             )
           }
       })
