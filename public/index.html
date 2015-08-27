@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello React</title>
+    <link rel="stylesheet" href="css/base.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/JSXTransformer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+    <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+    <script src="https://cdn.firebase.com/libs/reactfire/0.5.0/reactfire.min.js"></script>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script type="text/jsx;harmony=true">
+      var Body = React.createClass({
+        render:
+          function(){
+            return(
+              <div>
+                <Header/>
+                <Post/>
+              </div>
+            //for each newArticle make a new component
+            )
+          }
+      })
+      var Header= React.createClass({
+        render: 
+          function(){
+            return(
+              <ul>
+                <li> <span id= "logo"> Logo </span> </li>
+                <li> <span id= "title"> React-Hacker News </span> </li>
+                <li> news </li>
+                <li> comments </li>
+                <li> show </li>
+                <li> ask </li>
+                <li> jobs </li>
+                <li> submit </li>
+              </ul>
+            )
+          }
+      })
+
+      var Post= React.createClass({
+        render:
+          function(){
+            return(
+              <h1> Hey </h1>
+            )
+          }
+      })
+
+      React.render(<Body/>, document.getElementById('content'));
+    </script>
+  </body>
+</html>
