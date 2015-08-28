@@ -9,6 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
     <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
     <script src="https://cdn.firebase.com/libs/reactfire/0.5.0/reactfire.min.js"></script>
+    <script src="js/moment.js"></script>
   </head>
   <body>
     <div id="content"></div>
@@ -18,7 +19,9 @@
           return{
             items:[],
             objects:[],
-            displayView: []
+            displayView: [],
+            showLessbutton: false,
+            showMoreButton: true
           }
         },
         componentWillMount: function(){
@@ -39,7 +42,10 @@ this.firebaseRef = new Firebase('https://hacker-news.firebaseio.com/v0/topstorie
 
                 <Header/>
                 <Post articles = {this.state.displayView}/>
-                <p onClick= {this.display30More}> More </p>
+                <div className ="less_moreBut">
+                  {this.state.showMoreButton ? <p onClick= {this.display30More}> More </p> : null}
+                  {this.state.showLessbutton ? <p onClick= {this.display30Less}> Less </p> : null}
+                </div>
               </div>
             //for each newArticle make a new component
             )
@@ -47,11 +53,39 @@ this.firebaseRef = new Firebase('https://hacker-news.firebaseio.com/v0/topstorie
         populateInfo: function(){
           var allObjectRef = this.state.items.val();
           
-          allObjectRef.forEach(function(item){
+          allObjectRef.forEach(function(item, index){
               var reference = new Firebase("https://hacker-news.firebaseio.com/v0/item/"+item);
               reference.once('value', function(item){
+                var timePosted = item.val().time;
 
-                this.state.objects.push(<div class="article"> <h1>{item.val().by} </h1> </div>)
+                var timeMoment = moment.unix(timePosted);
+                var fromThen = timeMoment.fromNow();
+                console.log(item.val());
+                if (item.val().url)
+                  { var baseUrl =item.val().url.split('/');
+                    baseUrl=baseUrl[2]
+                  }
+                var correctPhrase;
+                if(item.val().descendants===1){
+                  correctPhrase=1+' comment';
+                }
+                else if(item.val().descendants===0){
+                  correctPhrase= <span> discuss </span>
+                }
+                else{
+                  correctPhrase=item.val().descendants+' comments'
+                }
+                this.state.objects.push(
+                  <div className="article"> 
+                    <p>{index+1}</p>
+                    <div className="topPart">
+                      <p className="title"><a href={item.val().url}>{item.val().title} </a></p>
+                      <p className="baseUrl">{baseUrl} </p>
+                    </div>
+                    <div className="bottomPart">
+                      <p>{item.val().score} points by {item.val().by} {fromThen} | {correctPhrase} </p>
+                    </div>
+                  </div>)
                 this.checkStatus();
             }.bind(this))
             }.bind(this));
@@ -70,9 +104,38 @@ this.firebaseRef = new Firebase('https://hacker-news.firebaseio.com/v0/topstorie
         display30More:function(){
           var initalRange = this.props.range;
           this.props.range+=30;
+
+          if (this.props.range > this.state.objects.length-1){
+            console.log('its greater');
+            console.log('props range is',this.props.range)
+            var total=0;
+            while( this.props.range >this.state.objects.length-1){
+              total = this.props.range--
+            }
+            this.setState({
+              displayView: this.state.objects.slice(total-30,total),
+              showMoreButton: false
+            })
+          }
+          else
+            this.setState({
+              displayView: this.state.objects.slice(initalRange, this.props.range),
+              showLessbutton: true
+            });
+        },
+        display30Less: function(){
+          this.props.range-=30;
+          var initalRange= this.props.range-30
+          var showLessbutton = true;
+          if (this.props.range===30){
+            showLessbutton = false;
+          }
           this.setState({
-            displayView: this.state.objects.slice(initalRange, this.props.range)
+            displayView: this.state.objects.slice(initalRange, this.props.range),
+            showLessbutton: showLessbutton,
+            showMoreButton:true
           });
+          console.log('30 Less');
         }
       });
       var Header= React.createClass({
@@ -93,6 +156,14 @@ this.firebaseRef = new Firebase('https://hacker-news.firebaseio.com/v0/topstorie
           }
       })
 
+      var LessButton= React.createClass({
+        render: function(){
+          return(
+            <p> Less </p>
+            )
+        },
+
+      })
       var Post= React.createClass({
         render:
           function(){
