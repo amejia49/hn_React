@@ -40,54 +40,52 @@ this.firebaseRef = new Firebase('https://hacker-news.firebaseio.com/v0/topstorie
           console.log(this.state.objects)
             return(
               <div className="all-posts">
-
-
                 <Header/>
                 <Post articles = {this.state.displayView} />
-                <div className ="less_moreBut">
-                  {this.state.showMoreButton ? <p onClick= {this.display30More}> More </p> : null}
-                  {this.state.showLessbutton ? <p onClick= {this.display30Less}> Less </p> : null}
+                <div>
+                   {this.state.showLessbutton ? <p onClick= {this.display30Less}> Less </p> : null} 
+                   {this.state.showMoreButton ? <p onClick= {this.display30More}> More </p> : null}
                 </div>
               </div>
-            //for each newArticle make a new component
             )
           },
         populateInfo: function(){
           var allObjectRef = this.state.items.val();
           
+          //for Each Object get the reference to it 
           allObjectRef.forEach(function(item, index){
               var reference = new Firebase("https://hacker-news.firebaseio.com/v0/item/"+item);
               reference.once('value', function(item){
                 var timePosted = item.val().time;
-
                 var timeMoment = moment.unix(timePosted);
                 var fromThen = timeMoment.fromNow();
-                console.log(item.val());
+
+                //if theres a url on the object, get it and store into baseUrl
                 if (item.val().url)
                   { var baseUrl =item.val().url.split('/');
                     baseUrl=baseUrl[2]
                   }
+
+                //0, 1, or more comments to get the wording right
                 var correctPhrase;
                 if(item.val().descendants===1){
                   correctPhrase=1+' comment';
                 }
                 else if(item.val().descendants===0){
-                  correctPhrase= <span> discuss </span>
+                  correctPhrase= <span> 'discuss' </span>
                 }
                 else{
-                  correctPhrase=item.val().descendants+' comments'
+                  correctPhrase= item.val().descendants+' comments'
                 }
+
                 this.state.objects.push(
                   <div className="articles"> 
-                    <div className="index-number">{index+1}
-
-                    </div>
+                    <div className="index-number"> {index+1}. </div>
                     <div className="article-info">
                       <div className="row topPart">
-                        <div className="title col-sm-6 col-md-6"><b><a href={item.val().url}>{item.val().title} </a></b>
+                        <div className="title col-sm-6 col-md-6"> <b><a href={item.val().url}>{item.val().title} </a> </b>
                          ({baseUrl})
                         </div>
-                       
                       </div>
                       <div className="row">
                         <div className="bottomPart col-md-12">
@@ -100,6 +98,8 @@ this.firebaseRef = new Firebase('https://hacker-news.firebaseio.com/v0/topstorie
             }.bind(this))
             }.bind(this));
         },
+        //for each object, check to see if all objects have been correctly pushed to the array
+          /* Note for future, would like to complete this using promises */
         checkStatus: function(){
            if(this.state.objects.length === 30){
               this.setState({
@@ -148,21 +148,22 @@ this.firebaseRef = new Firebase('https://hacker-news.firebaseio.com/v0/topstorie
           console.log('30 Less');
         }
       });
+
       var Header= React.createClass({
         render: 
           function(){
             return(
               <nav>
-              <ul >
-                <li> <span id= "logo"> Logo </span> </li>
-                <li> <span id= "title"> React-Hacker News </span> </li>
-                <li> news </li>
-                <li> comments </li>
-                <li> show </li>
-                <li> ask </li>
-                <li> jobs </li>
-                <li> submit </li>
-              </ul>
+                <ul >
+                  <li> <span id= "logo"> Logo </span> </li>
+                  <li> <span id= "title"> React_Hacker_News </span> </li>
+                  <li> news </li>
+                  <li> comments </li>
+                  <li> show </li>
+                  <li> ask </li>
+                  <li> jobs </li>
+                  <li> submit </li>
+                </ul>
               </nav>
             )
           }
