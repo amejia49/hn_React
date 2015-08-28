@@ -2,7 +2,8 @@
 <html>
   <head>
     <title>Hello React</title>
-    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/react.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/JSXTransformer.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -12,7 +13,7 @@
     <script src="js/moment.js"></script>
   </head>
   <body>
-    <div id="content"></div>
+    <div id="content" class="container"></div>
     <script type="text/jsx;harmony=true">
       var Body = React.createClass({
         getInitialState: function(){
@@ -38,10 +39,11 @@ this.firebaseRef = new Firebase('https://hacker-news.firebaseio.com/v0/topstorie
         render: function(){
           console.log(this.state.objects)
             return(
-              <div>
+              <div className="all-posts">
+
 
                 <Header/>
-                <Post articles = {this.state.displayView}/>
+                <Post articles = {this.state.displayView} />
                 <div className ="less_moreBut">
                   {this.state.showMoreButton ? <p onClick= {this.display30More}> More </p> : null}
                   {this.state.showLessbutton ? <p onClick= {this.display30Less}> Less </p> : null}
@@ -76,14 +78,22 @@ this.firebaseRef = new Firebase('https://hacker-news.firebaseio.com/v0/topstorie
                   correctPhrase=item.val().descendants+' comments'
                 }
                 this.state.objects.push(
-                  <div className="article"> 
-                    <p>{index+1}</p>
-                    <div className="topPart">
-                      <p className="title"><a href={item.val().url}>{item.val().title} </a></p>
-                      <p className="baseUrl">{baseUrl} </p>
+                  <div className="articles"> 
+                    <div className="index-number">{index+1}
+
                     </div>
-                    <div className="bottomPart">
-                      <p>{item.val().score} points by {item.val().by} {fromThen} | {correctPhrase} </p>
+                    <div className="article-info">
+                      <div className="row topPart">
+                        <div className="title col-sm-6 col-md-6"><b><a href={item.val().url}>{item.val().title} </a></b>
+                         ({baseUrl})
+                        </div>
+                       
+                      </div>
+                      <div className="row">
+                        <div className="bottomPart col-md-12">
+                          <p>{item.val().score} points by {item.val().by} {fromThen} | {correctPhrase} </p>
+                        </div>
+                      </div>
                     </div>
                   </div>)
                 this.checkStatus();
@@ -142,7 +152,8 @@ this.firebaseRef = new Firebase('https://hacker-news.firebaseio.com/v0/topstorie
         render: 
           function(){
             return(
-              <ul>
+              <nav>
+              <ul >
                 <li> <span id= "logo"> Logo </span> </li>
                 <li> <span id= "title"> React-Hacker News </span> </li>
                 <li> news </li>
@@ -152,6 +163,7 @@ this.firebaseRef = new Firebase('https://hacker-news.firebaseio.com/v0/topstorie
                 <li> jobs </li>
                 <li> submit </li>
               </ul>
+              </nav>
             )
           }
       })

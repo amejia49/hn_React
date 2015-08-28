@@ -1,0 +1,41 @@
+#content{
+	width:80%;
+	margin:0 auto;
+}
+
+.topPart{
+	display:inline;
+}
+
+nav li {
+	display: inline;
+	text-decoration: none;
+	padding-right: 5px;
+	margin-right: 3px;
+}
+
+.index-number{
+	float: left;
+	padding-right: 5px;
+}
+
+.all-posts{
+	background-color: #F0F8FF;	
+}
+.article-info {
+	width: 100%;
+}
+
+
+a {
+	text-decoration: none;
+	color: inherit;
+	text-decoration: bold;
+}
+
+nav{
+	background-color: #21CE99;
+	width: 100%;
+	overflow: hidden;
+
+}
